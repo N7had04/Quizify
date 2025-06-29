@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -67,15 +68,21 @@ fun LoginScreenPortrait(
             TextField(
                 value = email.value,
                 onValueChange = { email.value = it },
-                label = { Text("Email") },
+                label = { Text(text = "Email", color = Color.Black) },
                 maxLines = 1,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                )
             )
 
             TextField(
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password") },
+                label = { Text(text = "Password", color = Color.Black) },
                 trailingIcon = {
                     val icon = if (passwordVisibility.value) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) {
@@ -84,7 +91,13 @@ fun LoginScreenPortrait(
                 },
                 visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
                 maxLines = 1,
-                modifier = Modifier.fillMaxWidth().padding(16.dp)
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             Button(
@@ -92,7 +105,7 @@ fun LoginScreenPortrait(
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 30.dp),
                 colors = ButtonDefaults.buttonColors(Color.Black)
             ) {
-                Text("Login")
+                Text(text = "Login", color = Color.White)
             }
 
             TextButton(
@@ -100,7 +113,7 @@ fun LoginScreenPortrait(
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(Color(0xFF6E58D9))
             ) {
-                Text("Don't have an account? Sign up")
+                Text(text = "Don't have an account? Sign up", color = Color.White)
             }
         }
     }

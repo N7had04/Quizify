@@ -9,7 +9,7 @@ interface QuizifyService {
 
     @GET("api.php")
     suspend fun getQuestionsByDifficultyAndCategory(
-        @Query("amount") amount: Int = 3,
+        @Query("amount") amount: Int = 15,
         @Query("type") type: String = "multiple",
         @Query("difficulty") difficulty: String,
         @Query("category") category: Int

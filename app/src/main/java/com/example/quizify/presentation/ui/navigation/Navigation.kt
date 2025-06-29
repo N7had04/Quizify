@@ -130,7 +130,6 @@ fun Navigation(
                 passwordVisibility = quizViewModel.passwordVisibility,
                 passwordVisibility2 = quizViewModel.passwordVisibility2,
                 context = context,
-                isPortrait = isPortrait,
                 modifier = modifier
             )
         }
