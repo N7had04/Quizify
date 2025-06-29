@@ -1,6 +1,5 @@
 package com.example.quizify.presentation.ui.screens
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,10 +37,6 @@ fun GameEndScreenLandscape(
     modifier: Modifier = Modifier,
     navigateToHome: () -> Unit
 ) {
-    BackHandler {
-        navigateToHome()
-    }
-
     Box(
         modifier = modifier.fillMaxSize().background(Color(0xFF5857A4)),
         contentAlignment = Alignment.Center
@@ -72,7 +67,8 @@ fun GameEndScreenLandscape(
                     },
                     fontSize = 20.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -90,7 +86,8 @@ fun GameEndScreenLandscape(
                     },
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -98,7 +95,8 @@ fun GameEndScreenLandscape(
                 Text(
                     text = "Your Score %.2f / 100.00".format(score.toFloat() / 15 * 100),
                     fontSize = 16.sp,
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Center,
+                    color = Color.Black
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -112,13 +110,15 @@ fun GameEndScreenLandscape(
                     ) {
                         Text(
                             text = "Correct Answers",
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            color = Color.Black
                         )
 
                         Text(
                             text = "$score",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.Black
                         )
                     }
 
@@ -132,13 +132,15 @@ fun GameEndScreenLandscape(
                     ) {
                         Text(
                             text = "Wrong Answers",
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
+                            color = Color.Black
                         )
 
                         Text(
                             text = "${15 - score}",
                             fontSize = 30.sp,
-                            fontWeight = FontWeight.ExtraBold
+                            fontWeight = FontWeight.ExtraBold,
+                            color = Color.Black
                         )
                     }
                 }

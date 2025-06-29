@@ -9,24 +9,28 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun QuitDialog(
+    score: MutableState<Int>,
+    currentQuestion: MutableState<Int>,
     showQuitDialog: MutableState<Boolean>,
     onQuit: () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = { showQuitDialog.value = false },
-        title = { Text("Quit Game") },
-        text = { Text("Are you sure you want to quit the game?") },
+        title = { Text(text = "Quit Game", color = Color.Black) },
+        text = { Text(text = "Are you sure you want to quit the game?", color = Color.Black) },
         confirmButton = {
             TextButton(onClick = {
                 showQuitDialog.value = false
+                score.value = 0
+                currentQuestion.value = 0
                 onQuit()
             }) {
-                Text("Yes")
+                Text(text = "Yes", color = Color.Black)
             }
         },
         dismissButton = {
             TextButton(onClick = { showQuitDialog.value = false }) {
-                Text("No")
+                Text(text = "No", color = Color.Black)
             }
         },
         containerColor = Color(0xFFF0C828)

@@ -1,14 +1,17 @@
 package com.example.quizify.presentation.ui.navigation
 
+import android.app.Activity
 import android.content.res.Configuration
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -28,6 +31,7 @@ import com.example.quizify.presentation.ui.screens.SignUpScreen
 import com.example.quizify.presentation.ui.screens.SplashScreen
 import com.example.quizify.presentation.viewmodel.AuthViewModel
 import com.example.quizify.presentation.viewmodel.QuizViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,31 +51,36 @@ fun Navigation(
     val questions by quizViewModel.questions.collectAsState()
     val error by quizViewModel.error.collectAsState()
     val isLoading by quizViewModel.isLoading.collectAsState()
+    val splashScreenShown = remember { mutableStateOf(false) }
 
-    LaunchedEffect(isLoggedIn) {
-        snapshotFlow { navController.currentBackStackEntry?.destination?.route }.collect { currentRoute ->
-                when (isLoggedIn) {
-                    true -> {
-                        if (currentRoute in listOf("login", "signup", "splash")) {
-                            navController.navigate("home") {
-                                popUpTo("splash") { inclusive = true }
-                                launchSingleTop = true
-                            }
+    LaunchedEffect(Unit) {
+        delay(1500)
+        splashScreenShown.value = true
+    }
+
+    LaunchedEffect(isLoggedIn, splashScreenShown.value) {
+        if (splashScreenShown.value && isLoggedIn != null) {
+            val currentRoute = navController.currentBackStackEntry?.destination?.route
+            when (isLoggedIn) {
+                true -> {
+                    if (currentRoute in listOf("login", "signup", "splash")) {
+                        navController.navigate("home") {
+                            popUpTo("splash") { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
-
-                    false -> {
-                        if (currentRoute != "login" && currentRoute != "signup") {
-                            navController.navigate("login") {
-                                popUpTo("splash") { inclusive = true }
-                                launchSingleTop = true
-                            }
-                        }
-                    }
-
-                    else -> Unit
                 }
+                false -> {
+                    if (currentRoute != "login") {
+                        navController.navigate("login") {
+                            popUpTo("splash") { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
+                }
+                else -> {}
             }
+        }
     }
 
     NavHost(
@@ -83,10 +92,14 @@ fun Navigation(
         }
 
         composable("login") {
+            BackHandler {}
             LoginScreen(
                 authState = authState,
                 login = { email, password -> authViewModel.login(email, password) },
-                navigate = { route -> navController.navigate(route) },
+                navigate = { route ->
+                    navController.navigate(route) {
+                        launchSingleTop = true
+                    } },
                 email = quizViewModel.email,
                 password = quizViewModel.password,
                 passwordVisibility = quizViewModel.passwordVisibility,
@@ -97,10 +110,13 @@ fun Navigation(
         }
 
         composable("signup") {
+            BackHandler {
+                navController.popBackStack("login", false)
+            }
             SignUpScreen(
                 authState = authState,
                 signUp = { name, surname, email, password -> authViewModel.signup(name, surname, email, password) },
-                navigate = { route -> navController.navigate(route) },
+                navigate = { route -> navController.popBackStack(route, false) },
                 name = quizViewModel.name,
                 nameError = quizViewModel.nameError,
                 surname = quizViewModel.surname,
@@ -120,6 +136,9 @@ fun Navigation(
         }
 
         composable("home") {
+            BackHandler {
+                (context as? Activity)?.finish()
+            }
             HomeScreen(
                 user = user ?: User(0, "", "", "", ""),
                 onStartGame = { difficulty, categoryID -> navController.navigate("game/$difficulty/$categoryID") },
@@ -172,8 +191,10 @@ fun Navigation(
                         score = quizViewModel.score,
                         showQuitDialog = quizViewModel.showQuitDialog,
                         modifier = modifier,
-                        onQuit = { navController.navigate("home") },
-                        navigateToEnd = { navController.navigate("end/$it") }
+                        onQuit = { navController.popBackStack("home", false) },
+                        navigateToEnd = { navController.navigate("end/$it") {
+                            popUpTo("game/{difficulty}/{categoryID}") { inclusive = true }
+                        }}
                     )
                 }
                 else -> {
@@ -186,11 +207,14 @@ fun Navigation(
 
         composable("end/{score}") {
             val score = it.arguments?.getString("score")?.toIntOrNull() ?: 0
+            BackHandler {
+                navController.popBackStack("home", false)
+            }
             GameEndScreen(
                 score = score,
                 isPortrait = isPortrait,
                 modifier = modifier,
-                navigateToHome = { navController.navigate("home") }
+                navigateToHome = { navController.popBackStack("home", false)}
             )
         }
     }

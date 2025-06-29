@@ -30,9 +30,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,8 +46,6 @@ import com.example.quizify.data.model.Question
 import com.example.quizify.presentation.ui.components.QuitDialog
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 @Composable
@@ -65,9 +61,7 @@ fun GameScreen(
     onQuit: () -> Unit,
     navigateToEnd: (Int) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
     var timerJob by remember { mutableStateOf<Job?>(null) }
-
     LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
 
     BackHandler {
@@ -75,7 +69,7 @@ fun GameScreen(
     }
 
     if (showQuitDialog.value) {
-        QuitDialog(showQuitDialog, onQuit)
+        QuitDialog(score, currentQuestion, showQuitDialog, onQuit)
     }
 
     if (questions.isEmpty()) return
@@ -90,17 +84,16 @@ fun GameScreen(
         selectedAnswer.value = ""
         description.value = HtmlCompat.fromHtml(currentQ.question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
 
-        timerJob?.cancel()
-        timerJob = coroutineScope.launch {
+        timerJob = launch {
             while (timer.intValue > 0 && selectedAnswer.value.isEmpty()) {
                 delay(1000)
                 timer.intValue--
             }
         }
 
-        snapshotFlow { selectedAnswer.value }
-            .filter { it.isNotEmpty() }
-            .firstOrNull()
+        while (selectedAnswer.value.isEmpty() && timer.intValue > 0) {
+            delay(100)
+        }
 
         timerJob?.cancel()
 
@@ -111,6 +104,7 @@ fun GameScreen(
         } else {
             currentQuestion.intValue = 0
             navigateToEnd(score.intValue)
+            score.intValue = 0
         }
     }
 
@@ -152,7 +146,7 @@ fun GameScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Box(
                 modifier = Modifier
@@ -179,7 +173,7 @@ fun GameScreen(
                 modifier = Modifier.padding(16.dp)
             )
 
-            Spacer(Modifier.height(70.dp))
+            Spacer(Modifier.height(30.dp))
 
             Text(
                 text = description.value,
@@ -191,7 +185,7 @@ fun GameScreen(
                 modifier = Modifier.padding(16.dp)
             )
 
-            Spacer(Modifier.height(50.dp))
+            Spacer(Modifier.height(30.dp))
 
             shuffledAnswers.forEach { answer ->
                 val backgroundColor = when {
@@ -214,7 +208,10 @@ fun GameScreen(
                     modifier = Modifier.fillMaxWidth().padding(start = 24.dp, end = 24.dp, top = 8.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = backgroundColor)
                 ) {
-                    Text(HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString())
+                    Text(
+                        text = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+                        color = Color.White
+                    )
                 }
             }
         }
