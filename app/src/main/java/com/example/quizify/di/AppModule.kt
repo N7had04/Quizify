@@ -1,7 +1,12 @@
 package com.example.quizify.di
 
+import android.app.Application
+import androidx.room.Room
 import com.example.quizify.BuildConfig
 import com.example.quizify.data.api.QuizifyService
+import com.example.quizify.data.datastore.DataStoreManager
+import com.example.quizify.data.db.UserDao
+import com.example.quizify.data.db.UserDatabase
 import com.example.quizify.data.repository.QuizRepository
 import com.example.quizify.data.repository.QuizRepositoryImpl
 import dagger.Module
@@ -20,8 +25,11 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideQuizRepository(quizifyService: QuizifyService): QuizRepository {
-        return QuizRepositoryImpl(quizifyService)
+    fun provideQuizRepository(
+        quizifyService: QuizifyService,
+        userDao: UserDao
+    ): QuizRepository {
+        return QuizRepositoryImpl(quizifyService, userDao)
     }
 
     @Provides
@@ -43,5 +51,27 @@ class AppModule {
     @Singleton
     fun provideQuizifyService(retrofit: Retrofit): QuizifyService {
         return retrofit.create(QuizifyService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(userDatabase: UserDatabase): UserDao {
+        return userDatabase.userDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDatabase(app: Application): UserDatabase {
+        return Room.databaseBuilder(
+            app,
+            UserDatabase::class.java,
+            "user_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(app: Application): DataStoreManager {
+        return DataStoreManager(app)
     }
 }

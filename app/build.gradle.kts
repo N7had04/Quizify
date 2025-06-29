@@ -84,6 +84,12 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.gson)
 
+    // DataStore Preference
+    implementation(libs.androidx.datastore.preferences)
+
+    // Material Icons
+    implementation(libs.androidx.material.icons.extended)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

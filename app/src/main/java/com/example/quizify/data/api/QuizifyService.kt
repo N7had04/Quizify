@@ -12,6 +12,6 @@ interface QuizifyService {
         @Query("amount") amount: Int = 15,
         @Query("type") type: String = "multiple",
         @Query("difficulty") difficulty: String,
-        @Query("category") category: String
+        @Query("category") category: Int
     ): Response<ApiResponse>
 }
