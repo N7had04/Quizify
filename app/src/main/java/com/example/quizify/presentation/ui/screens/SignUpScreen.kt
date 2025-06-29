@@ -1,6 +1,7 @@
 package com.example.quizify.presentation.ui.screens
 
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -53,6 +55,7 @@ fun SignUpScreen(
     context: Context,
     modifier: Modifier = Modifier
 ) {
+    LockScreenOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Success -> {
@@ -78,10 +81,16 @@ fun SignUpScreen(
                 onValueChange = {
                     name.value = it
                     nameError.value = false },
-                label = { Text("Name") },
+                label = { Text(text = "Name", color = Color.Black) },
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                isError = nameError.value
+                isError = nameError.value,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             if (nameError.value) {
@@ -98,10 +107,16 @@ fun SignUpScreen(
                 onValueChange = {
                     surname.value = it
                     surnameError.value = false },
-                label = { Text("Surname") },
+                label = { Text(text = "Surname", color = Color.Black) },
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                isError = surnameError.value
+                isError = surnameError.value,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             if (surnameError.value) {
@@ -118,10 +133,16 @@ fun SignUpScreen(
                 onValueChange = {
                     email.value = it
                     emailError.value = false },
-                label = { Text("Email") },
+                label = { Text(text = "Email", color = Color.Black) },
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                isError = emailError.value
+                isError = emailError.value,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             if (emailError.value) {
@@ -138,7 +159,7 @@ fun SignUpScreen(
                 onValueChange = {
                     password.value = it
                     passwordError.value = false},
-                label = { Text("Password") },
+                label = { Text(text = "Password", color = Color.Black) },
                 trailingIcon = {
                     val icon = if (passwordVisibility.value) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) {
@@ -148,7 +169,13 @@ fun SignUpScreen(
                 visualTransformation = if (passwordVisibility.value) VisualTransformation.None else PasswordVisualTransformation(),
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                isError = passwordError.value
+                isError = passwordError.value,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             if (passwordError.value) {
@@ -165,7 +192,7 @@ fun SignUpScreen(
                 onValueChange = {
                     password2.value = it
                     password2Error.value = false},
-                label = { Text("Confirm your password") },
+                label = { Text(text = "Confirm your password", color = Color.Black) },
                 trailingIcon = {
                     val icon = if (passwordVisibility2.value) Icons.Filled.VisibilityOff else Icons.Filled.Visibility
                     IconButton(onClick = { passwordVisibility2.value = !passwordVisibility2.value }) {
@@ -175,7 +202,13 @@ fun SignUpScreen(
                 visualTransformation = if (passwordVisibility2.value) VisualTransformation.None else PasswordVisualTransformation(),
                 maxLines = 1,
                 modifier = Modifier.fillMaxWidth().padding(16.dp),
-                isError = password2Error.value
+                isError = password2Error.value,
+                colors = TextFieldDefaults.colors(
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
+                )
             )
 
             if (password2Error.value) {
@@ -202,9 +235,11 @@ fun SignUpScreen(
                         signUp(name.value, surname.value, email.value, password.value)
                     } },
                 modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 30.dp),
-                colors = ButtonDefaults.buttonColors(Color.Black)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Black
+                )
             ) {
-                Text("Sign Up")
+                Text(text = "Sign Up", color = Color.White)
             }
         }
     }
